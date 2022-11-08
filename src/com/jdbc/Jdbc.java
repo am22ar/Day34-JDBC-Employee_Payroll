@@ -20,6 +20,8 @@ public class Jdbc {
 		updateData(con);
 		System.out.println(reteriveDataByName(con));
 		particularDateRange(con);
+		sumByGroup(con);
+		avgSalary(con);
 	}
 
 	public static Connection connected() {
@@ -54,14 +56,14 @@ public class Jdbc {
 		}
 	}
 	public static void updateData(Connection connection) throws SQLException {
-		Scanner sc = new Scanner(System.in);
+		//Scanner sc = new Scanner(System.in);
 		PreparedStatement preparedStatement = connection.prepareStatement("update employee_payroll set salary = ? where id =?;");
 		System.out.println("Enter salary to be updated: ");
-		double salary = sc.nextDouble();
+		//double salary = sc.nextDouble();
 		System.out.println("Enter at which id you want to update salary: ");
-		int id = sc.nextInt();
-		preparedStatement.setDouble(1, salary);
-		preparedStatement.setInt(2, id);
+		//int id = sc.nextInt();
+		preparedStatement.setDouble(1, 300000.00);
+		preparedStatement.setInt(2, 2);
 		preparedStatement.executeUpdate();
 		System.out.println("Updated Successfully.....!!!");
 	}
@@ -91,6 +93,28 @@ public class Jdbc {
 	            name = (resultSet.getString("name"));
 	        }
 	        return name;
+	    }
+	 public static Double sumByGroup(Connection connection) throws SQLException {
+	        Double salary = null;
+	        PreparedStatement preparedStatement = connection.prepareStatement("select sum(salary) as salary from employee_payroll where gender = ? group by gender");
+	        preparedStatement.setString(1, "F");
+	        ResultSet resultSet = preparedStatement.executeQuery();
+	        while (resultSet.next()) {
+	            salary = (resultSet.getDouble("salary"));
+	            System.out.println("Sum of salary by gender(F) is: "+salary);
+	        }
+	        return salary;
+	    }
+	 public static Double avgSalary(Connection connection) throws SQLException {
+	        Double avgSalary = null;
+	        PreparedStatement preparedStatement = connection.prepareStatement("select avg(salary) as salary from employee_payroll where gender = ? group by gender");
+	        preparedStatement.setString(1, "M");
+	        ResultSet resultSet = preparedStatement.executeQuery();
+	        while (resultSet.next()) {
+	            avgSalary = (resultSet.getDouble("salary"));
+	            System.out.println("Average salary of males is: " + avgSalary);
+	        }
+	        return avgSalary;
 	    }
 
 	public static void listDrivers() {
